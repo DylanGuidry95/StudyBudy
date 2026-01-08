@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDateTime } from "../form/helpers";
 
 function SubjectSidebar({ subject, onBack, guideApi }) {
   const [newTitle, setNewTitle] = useState("");
@@ -27,20 +28,20 @@ function SubjectSidebar({ subject, onBack, guideApi }) {
               onClick={() => guideApi.setActiveGuideId(guide.id)}
               style={{
                 fontWeight:
-                  guide.id === guideApi.activeGuideId
-                    ? "bold"
-                    : "normal",
+                  guide.id === guideApi.activeGuideId ? "bold" : "normal",
               }}
             >
               {guide.title}
             </button>
-
             <button
               onClick={() => guideApi.deleteGuide(guide.id)}
               style={{ color: "red", marginLeft: "6px" }}
             >
               ✕
             </button>
+            <p style={{ color: "gray", marginLeft: "6px" }}>
+              {formatDateTime(guide.lastEdited)}
+            </p>            
           </li>
         ))}
       </ul>
