@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { formatDateTime } from "../form/helpers";
+import { useGuidesDb } from "../../hooks/useGuidesDb";
 
-function SubjectSidebar({ subject, onBack, guideApi }) {
-  const [newTitle, setNewTitle] = useState("");
+function SubjectSidebar({ subject, guidesDb, activeGuideId, setActiveGuideId, onBack }) {
+  const [newTitle, setNewTitle] = useState("");  
+
+  if (!subject) {
+    return <div className="sidebar">No subject selected</div>;
+  }  
 
   const add = () => {
-    guideApi.addGuide(newTitle);
+    if (!newTitle.trim()) return;
+    guidesDb.addGuide(newTitle);
     setNewTitle("");
   };
+
+  if (guidesDb.loading) {
+    return <div className="sidebar">Loading guides…</div>;
+  }
 
   return (
     <div className="sidebar">
@@ -22,26 +32,32 @@ function SubjectSidebar({ subject, onBack, guideApi }) {
       <button onClick={add}>Add Guide</button>
 
       <ul>
-        {subject.guides.map((guide) => (
+        {guidesDb.guides.length === 0 && (
+          <p style={{ color: "#888" }}>No guides yet</p>
+        )}
+
+        {(guidesDb.guides ?? []).map((guide) => (
           <li key={guide.id}>
             <button
-              onClick={() => guideApi.setActiveGuideId(guide.id)}
+              onClick={() => setActiveGuideId(guide.id)}
               style={{
                 fontWeight:
-                  guide.id === guideApi.activeGuideId ? "bold" : "normal",
+                  guide.id === activeGuideId ? "bold" : "normal",
               }}
             >
               {guide.title}
             </button>
+
             <button
-              onClick={() => guideApi.deleteGuide(guide.id)}
+              onClick={() => guidesDb.deleteGuide(guide.id)}
               style={{ color: "red", marginLeft: "6px" }}
             >
               ✕
             </button>
+
             <p style={{ color: "gray", marginLeft: "6px" }}>
-              {formatDateTime(guide.lastEdited)}
-            </p>            
+              {formatDateTime(guide.last_edited)}
+            </p>
           </li>
         ))}
       </ul>

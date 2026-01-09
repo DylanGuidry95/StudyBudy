@@ -1,24 +1,20 @@
 import GuideTitle from "./GuideTitle";
-import NotesPanel from "../notes/NotesPanel";
-import AttachmentPanel from "../attachments/AttachmentPanel";
 import CalendarPanel from "../home/CalendarPanel";
 
-function GuideEditor({ guide, updateGuide }) {
+function GuideEditor({ guide, onUpdateTitle }) {
+  if (!guide) {
+    return <p>No guide selected</p>;
+  }
+
   return (
     <>
-      <GuideTitle guide={guide} updateGuide={updateGuide} />
-      
-      <NotesPanel
-        notes={guide.notes}
-        updateGuide={updateGuide}
+      <GuideTitle
+        guide={guide}                
+        updateGuide={onUpdateTitle}
       />
 
-      <AttachmentPanel
-        attachments={guide.attachments}
-        updateGuide={updateGuide}
-      />
-
-      <CalendarPanel/>
+      {/* Notes & attachments come back after DB migration */}
+      <CalendarPanel />
     </>
   );
 }

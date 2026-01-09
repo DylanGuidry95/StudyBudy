@@ -6,7 +6,7 @@ function GuideTitle({ guide, updateGuide }) {
 
   const save = () => {
     if (!value.trim()) return;
-    updateGuide({ title: value.trim() });
+    updateGuide(value.trim());
     setEditing(false);
   };
 

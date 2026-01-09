@@ -1,7 +1,7 @@
 import './App.css';
 import { useEffect, useState } from "react";
-import SubjectList from "./components/subjects/SubjectList";
 import SubjectDetail from "./components/subjects/SubjectDetail";
+import HomeLayout from './components/home/HomeLayout';
 
 
 function App() {
@@ -17,26 +17,7 @@ function App() {
   return (
     <div className="container">
       <h1>Study Companion</h1>
-      {!selectedSubject ? (        
-        <SubjectList
-          subjects={subjects}
-          setSubjects={setSubjects}
-          onSelect={setSelectedSubject}
-        />
-      ) : (
-        <SubjectDetail
-          subject={selectedSubject}
-          onBack={() => setSelectedSubject(null)}
-          updateSubject={(updated) => {
-            setSubjects(
-              subjects.map((s) =>
-                s.id === updated.id ? updated : s
-              )
-            );
-            setSelectedSubject(updated);
-          }}
-        />
-      )}
+      <HomeLayout/>          
     </div>
   );
 }

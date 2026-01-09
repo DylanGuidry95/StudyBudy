@@ -1,61 +1,49 @@
 import { useState } from "react";
 import { useSubjects } from "../../hooks/useSubjects";
 
-function SubjectViewer({ subjects, setSubjects, onSelect }) {  
-  const {    
-    deleteSubject,
+function SubjectViewer({ subjectsUi, onSelectSubject }) {
+  const {
     groupedSubjects,
     sortedGroups,
     openGroups,
     toggleGroup,
-    searchTerm,
-    setSearchTerm,
-  } = useSubjects(subjects, setSubjects);
+    deleteSubject,
+  } = subjectsUi;
 
-    return (
-        <div>
-          <h3>Your Subjects</h3>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search subjects or instructors..."
-        style={{ width: "100%", marginBottom: "12px" }}
-      />      
-      {sortedGroups.map((group) => {
-        const isOpen = openGroups[group] !== false;
+  const confirmDelete = (subject) => {
+    if (!window.confirm(`Delete "${subject.name}"?`)) return;
+    deleteSubject(subject.id);
+  };
 
-        return (
-          <div key={group}>
-            <button onClick={() => toggleGroup(group)}>
-              {isOpen ? "▼" : "▶"}
-            </button>{" "}
-            {group}
-            {isOpen &&
-              groupedSubjects[group].map((subject) => (
-                <div key={subject.id}>
-                  <strong>{subject.name}</strong>
-                  <div>{subject.instructor}</div>
+  return (
+    <>
+      {sortedGroups.map((group) => (
+        <div key={group}>
+          <button onClick={() => toggleGroup(group)}>
+            {openGroups[group] ? "▼" : "▶"} {group}
+          </button>
 
-                  <button 
-                    type="button"
-                    onClick={() => onSelect(subject)}>
-                    View Study Guides
-                  </button>
+          {openGroups[group] &&
+            groupedSubjects[group].map((subject) => (
+              <div key={subject.id} style={{ display: "flex", gap: "8px" }}>
+                <strong>{subject.name}</strong>
 
-                  <button
-                    onClick={() => deleteSubject(subject.id)}
-                    style={{ color: "red" }}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
+                <button onClick={() => onSelectSubject(subject)}>
+                  Open
+                </button>
+
+                <button
+                  onClick={() => confirmDelete(subject)}
+                  style={{ color: "red" }}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
         </div>
-        );
-      } )}
-        </div>
-    );
+      ))}
+    </>
+  );
 }
 
 export default SubjectViewer;
