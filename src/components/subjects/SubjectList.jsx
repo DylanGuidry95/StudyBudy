@@ -1,21 +1,27 @@
-import { useState } from "react";
 import { useSubjects } from "../../hooks/useSubjects";
-import { getCurrentSemester } from "../../utils/semester";
-import SemesterSelect from "../form/SemesterSelect";
-import YearInput from "../form/YearInput";
 import HomeLayout from "../home/HomeSidebar";
 import CalendarPanel from "../home/CalendarPanel";
-import  AuthTests  from "../../tests/authTests";
+import AuthControls from "../auth/authControls";
+import { useAuthContext } from "../../components/auth/AuthProvider";
 
 function SubjectList({ subjects, setSubjects, onSelect }) {
   const {} = useSubjects(subjects, setSubjects);
-
+  const { user, loading } = useAuthContext();
   return (
-    <div className="home-layout">
-      <HomeLayout subjects={subjects} setSubjects={setSubjects} onSelect={onSelect} />
-      <CalendarPanel/>
-      <AuthTests></AuthTests>
-    </div>    
+    <div>
+      {loading && <p style={{ padding: "16px" }}>Checking Session...</p>}
+      <AuthControls />
+      {!loading && user && (                
+        <div className="home-layout">                                         
+          <HomeLayout
+            subjects={subjects}
+            setSubjects={setSubjects}
+            onSelect={onSelect}
+          />
+          <CalendarPanel />
+        </div>
+      )}
+    </div>
   );
 }
 

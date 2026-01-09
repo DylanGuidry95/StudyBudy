@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import SubjectList from "./components/subjects/SubjectList";
 import SubjectDetail from "./components/subjects/SubjectDetail";
 
+
 function App() {
   const [subjects, setSubjects] = useState(() => {
     const saved = localStorage.getItem("subjects");
     return saved ? JSON.parse(saved) : [];
-  });
+  });  
   useEffect(() => {
   localStorage.setItem("subjects", JSON.stringify(subjects));
   }, [subjects]);
@@ -16,7 +17,6 @@ function App() {
   return (
     <div className="container">
       <h1>Study Companion</h1>
-
       {!selectedSubject ? (        
         <SubjectList
           subjects={subjects}

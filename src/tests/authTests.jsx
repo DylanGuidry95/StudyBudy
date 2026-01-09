@@ -8,10 +8,10 @@ export function AuthTests({ }) {
     if (!auth.user) {
         return (
             <>
-                <button onClick={() => auth.signUp("test@test.com", "password123")}>
+                <button onClick={() => auth.signUp("guidry.dylan.95@gmail.com", "password123")}>
                     Sign Up
                 </button>
-                <button onClick={() => auth.signIn("test@test.com", "password123")}>
+                <button onClick={() => auth.signIn("guidry.dylan.95@gmail.com", "password123")}>
                     Sign In
                 </button>
             </>
