@@ -1,47 +1,62 @@
-import { useAttachments } from "../../hooks/useAttachments";
+import { useRef } from "react";
 import AttachmentList from "./AttachmentList";
-import AttachmentPreview from "./AttachmentPreview";
+import { useAttachmentsUi } from "../../hooks/useAttachmentsUi";
 
-function AttachmentPanel({ attachments = [], updateGuide }) {
-  const {
-    activeAttachment,
-    activeAttachmentId,
-    setActiveAttachmentId,
-    renamingId,
-    renameValue,
-    setRenameValue,
-    upload,
-    startRename,
-    saveRename,
-    remove,
-  } = useAttachments(attachments, updateGuide);
+function AttachmentPanel({ attachmentsDb }) {
+  const ui = useAttachmentsUi(attachmentsDb);
+  const fileInputRef = useRef(null);
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    attachmentsDb.upload(file);
+
+    // Reset input so same file can be selected again later
+    e.target.value = "";
+  };
+
+  if (attachmentsDb.loading) {
+    return <p>Loading attachments…</p>;
+  }
 
   return (
-    <>
+    <div>
       <h3>Attachments</h3>
 
+      {/* Hidden file input */}
       <input
+        ref={fileInputRef}
         type="file"
         accept=".pdf,image/*,.txt"
-        onChange={(e) => upload(e.target.files[0])}
+        style={{ display: "none" }}
+        onChange={handleFileSelected}
       />
 
-      <div style={{ display: "flex", gap: "16px", marginTop: "12px" }}>
-        <AttachmentList
-          attachments={attachments}
-          activeId={activeAttachmentId}
-          setActiveId={setActiveAttachmentId}
-          renamingId={renamingId}
-          renameValue={renameValue}
-          setRenameValue={setRenameValue}
-          startRename={startRename}
-          saveRename={saveRename}
-          deleteAttachment={remove}
-        />
+      {/* Upload button */}
+      <button onClick={openFileDialog}>
+        ➕ Upload Attachment
+      </button>
 
-        <AttachmentPreview attachment={activeAttachment} />
-      </div>
-    </>
+      <AttachmentList
+        attachments={attachmentsDb.attachments}
+        ui={ui}
+        db={attachmentsDb}
+      />
+
+      {ui.previewUrl && (
+        <iframe
+          src={ui.previewUrl}
+          title="preview"
+          width="100%"
+          height="300"
+        />
+      )}
+    </div>
   );
 }
 

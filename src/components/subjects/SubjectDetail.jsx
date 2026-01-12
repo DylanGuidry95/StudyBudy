@@ -3,11 +3,13 @@ import SubjectSidebar from "./SubjectSidebar";
 import GuideEditor from "../guides/GuideEditor";
 import { useGuidesDb } from "../../hooks/useGuidesDb";
 import { useNotesDb } from "../../hooks/useNoteDb";
+import { useAttachmentsDb } from "../../hooks/useAttachmentsDb";
 
 function SubjectDetail({ subject, onBack }) {
   const [activeGuideId, setActiveGuideId] = useState(null);
   const guidesDb = useGuidesDb(subject.id);
   const notesDb = useNotesDb(activeGuideId);
+  const attachmentsDb = useAttachmentsDb(activeGuideId);
 
   const activeGuide = guidesDb.guides.find(
     (g) => g.id === activeGuideId
@@ -34,7 +36,8 @@ function SubjectDetail({ subject, onBack }) {
           <GuideEditor 
           guide={activeGuide}
           notesDb={notesDb}
-          onUpdateTitle={updateGuideTitle} />
+          onUpdateTitle={updateGuideTitle}
+          attachmentsDb= {attachmentsDb} />
         ) : (
           <p>Select or create a study guide</p>
         )}
