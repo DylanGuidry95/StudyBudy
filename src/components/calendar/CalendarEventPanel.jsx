@@ -44,8 +44,7 @@ function CalendarEventPanel({
       });
     } else {
       calendarDb.updateEvent(selectedEvent.id, {
-        title,
-        subject_id: subjectId ?? null,
+        title,        
         start_date: date,
         start_time: time || null,
         description,
