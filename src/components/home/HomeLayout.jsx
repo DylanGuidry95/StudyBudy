@@ -7,6 +7,8 @@ import AuthControls from "../auth/authControls";
 import SubjectCreator from "../form/SubjectCreator";
 import SubjectViewer from "../form/SubjectViewer";
 import SubjectDetail from "../subjects/SubjectDetail";
+import CalendarPanel from "../calendar/CalendarPanel";
+import SubjectSidebar from "../subjects/SubjectSidebar";
 
 export function HomeLayout() {
   const subjectsDb = useSubjectsDb();
@@ -28,14 +30,19 @@ export function HomeLayout() {
       {user && (
         <>
           {!activeSubject && (
-            <div className="sidebar">
-              <SubjectCreator addSubject={subjectsUi.addSubject} />
-              <br />
+            <div className="home-layout">
+              <div className="sidebar">
+                <SubjectCreator addSubject={subjectsUi.addSubject} />
+                <br />
 
-              <SubjectViewer
-                subjectsUi={subjectsUi}
-                onSelectSubject={(subject) => setActiveSubject(subject)}
-              />
+                <SubjectViewer
+                  subjectsUi={subjectsUi}
+                  onSelectSubject={(subject) => setActiveSubject(subject)}
+                />                
+              </div>
+              <div className="main">
+                <CalendarPanel></CalendarPanel>
+              </div>
             </div>
           )}
 

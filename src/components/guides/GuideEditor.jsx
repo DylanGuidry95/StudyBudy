@@ -1,5 +1,4 @@
 import GuideTitle from "./GuideTitle";
-import CalendarPanel from "../home/CalendarPanel";
 import NotesPanel from "../notes/NotesPanel";
 import AttachmentPanel from "../attachments/AttachmentPanel";
 

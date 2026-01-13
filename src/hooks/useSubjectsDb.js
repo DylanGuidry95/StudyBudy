@@ -36,7 +36,7 @@ export function useSubjectsDb() {
   }, [user]);
 
   // ---------- ADD ----------
-  const addSubject = async ({ name, instructor, semester, year }) => {
+  const addSubject = async ({ name, instructor, semester, year, color }) => {
     if (!user) return;
 
     const { data, error } = await supabase
@@ -47,6 +47,7 @@ export function useSubjectsDb() {
         instructor,
         semester,
         year,
+        color,
       })
       .select()
       .single();

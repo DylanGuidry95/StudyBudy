@@ -4,7 +4,7 @@ import GuideEditor from "../guides/GuideEditor";
 import { useGuidesDb } from "../../hooks/useGuidesDb";
 import { useNotesDb } from "../../hooks/useNoteDb";
 import { useAttachmentsDb } from "../../hooks/useAttachmentsDb";
-import CalendarPanel from "../home/CalendarPanel";
+import CalendarPanel from "../calendar/CalendarPanel";
 
 function SubjectDetail({ subject, onBack }) {
   const [activeGuideId, setActiveGuideId] = useState(null);
@@ -30,7 +30,7 @@ function SubjectDetail({ subject, onBack }) {
         onBack={onBack}
       />      
       <div className="editor">
-        <CalendarPanel> </CalendarPanel>
+        <CalendarPanel subjectId={subject.id}> </CalendarPanel>
         {guidesDb.loading ? (
           <p>Loading guides…</p>
         ) : activeGuide ? (

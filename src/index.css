@@ -58,8 +58,19 @@ textarea {
   overflow-y: auto;
 }
 
+.calendar-layout {
+  display: flex;
+  height: 100%;
+}
+
+.calendar-main {
+  flex: 2;
+  padding: 16px;
+}
+
 .calendar-panel {
-  width: 300px;
+  flex: 1;
   border-left: 1px solid #ddd;
   padding: 16px;
+  background: #fafafa;
 }

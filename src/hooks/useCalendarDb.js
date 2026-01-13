@@ -61,11 +61,28 @@ export function useCalendarDb() {
     setEvents((prev) => prev.filter((e) => e.id !== id));
   };
 
+  const updateEvent = async (id, updates) => {
+    const { data, error } = await supabase
+      .from("calendar_events")
+      .update(updates)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      setError("Failed to update event");
+      return;
+    }
+
+    setEvents((prev) => prev.map((e) => (e.id === id ? data : e)));
+  };
+
   return {
     events,
     loading,
     error,
-    addEvent,
+    addEvent,    
     deleteEvent,
+    updateEvent,
   };
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getCurrentSemester } from "../../utils/semester";
 import SemesterSelect from "../form/SemesterSelect";
 import YearInput from "../form/YearInput";
+import { SUBJECT_COLORS } from "../../utils/subjectColors";
 
 export function SubjectCreator({ addSubject }) {
   const [name, setName] = useState("");
@@ -10,11 +11,13 @@ export function SubjectCreator({ addSubject }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
+  const randomColor = SUBJECT_COLORS[Math.floor(Math.random() * SUBJECT_COLORS.length)]
+
 
   const submit = () => {
     if (!validate()) return;
 
-    addSubject({ name, instructor, semester, year });
+    addSubject({ name, instructor, semester, year, color: randomColor });
 
     setName("");
     setInstructor("");
