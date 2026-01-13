@@ -8,7 +8,7 @@ export function useNotesUi(notesDb) {
   const toggleCollapse = (id) => {
     setCollapsed((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [id]: prev[id] === false,
     }));
   };
 

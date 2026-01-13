@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-function NoteItem({ note, api }) {
-  const isCollapsed = api.collapsed[note.id];
+function NoteItem({ note, ui }) {
+  const isCollapsed = ui.collapsed[note.id] !== false;
 
   const [localContent, setLocalContent] = useState(note.content);
   const debounceRef = useRef(null);
@@ -20,13 +20,13 @@ function NoteItem({ note, api }) {
     }
     
     debounceRef.current = setTimeout(() => {
-      api.updateContent(note.id, value);
+      ui.updateContent(note.id, value);
     }, 5000); // ⏱ 1 second (adjust as needed)
   };
 
   return (
     <div>
-      <button onClick={() => api.toggleCollapse(note.id)}>
+      <button onClick={() => ui.toggleCollapse(note.id)}>
         {isCollapsed ? "▶" : "▼"}
       </button>
 

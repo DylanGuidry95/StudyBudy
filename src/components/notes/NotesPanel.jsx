@@ -24,7 +24,7 @@ function NotesPanel({ notesDb }) {
         <NoteItem
           key={note.id}
           note={note}
-          api={ui} 
+          ui={ui} 
         />
       ))}
     </div>

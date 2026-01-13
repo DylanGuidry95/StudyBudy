@@ -20,6 +20,15 @@ function AttachmentPanel({ attachmentsDb }) {
     e.target.value = "";
   };
 
+  const db = {
+    ...attachmentsDb,
+    deleteAttachment: attachmentsDb.remove
+  }
+
+  const activeFile = (attachmentsDb.attachments ?? []).find(
+    (a) => a.id === ui.activeId
+  );  
+
   if (attachmentsDb.loading) {
     return <p>Loading attachments…</p>;
   }
@@ -38,23 +47,48 @@ function AttachmentPanel({ attachmentsDb }) {
       />
 
       {/* Upload button */}
-      <button onClick={openFileDialog}>
-        ➕ Upload Attachment
-      </button>
+      <button onClick={openFileDialog}>➕ Upload Attachment</button>
 
       <AttachmentList
         attachments={attachmentsDb.attachments}
         ui={ui}
-        db={attachmentsDb}
+        db={db}
       />
+      {activeFile && (
+        <>
+          <button
+            onClick={() => ui.setActiveId(null)}
+            style={{ marginBottom: 8 }}
+          >
+            ✕ Close Preview
+          </button>
 
-      {ui.previewUrl && (
-        <iframe
-          src={ui.previewUrl}
-          title="preview"
-          width="100%"
-          height="300"
-        />
+          {activeFile.type === "pdf" && (
+            <iframe
+              src={activeFile.url}
+              title={activeFile.name}
+              width="100%"
+              height="400"
+            />
+          )}
+
+          {activeFile.type === "image" && (
+            <img
+              src={activeFile.url}
+              alt={activeFile.name}
+              style={{ maxWidth: "100%" }}
+            />
+          )}
+
+          {activeFile.type === "text" && (
+            <iframe
+              src={activeFile.url}
+              title={activeFile.name}
+              width="100%"
+              height="250"
+            />
+          )}
+        </>
       )}
     </div>
   );
