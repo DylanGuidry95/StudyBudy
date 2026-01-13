@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { formatDateTime } from "../form/helpers";
-import { useGuidesDb } from "../../hooks/useGuidesDb";
 
 function SubjectSidebar({ subject, guidesDb, activeGuideId, setActiveGuideId, onBack }) {
   const [newTitle, setNewTitle] = useState("");  
@@ -23,13 +22,13 @@ function SubjectSidebar({ subject, guidesDb, activeGuideId, setActiveGuideId, on
     <div className="sidebar">
       <button onClick={onBack}>← Back</button>
       <h2>{subject.name}</h2>
-
+      
       <input
         value={newTitle}
         onChange={(e) => setNewTitle(e.target.value)}
         placeholder="New guide title"
       />
-      <button onClick={add}>Add Guide</button>
+      <button onClick={add}>Add Guide</button>  
 
       <ul>
         {guidesDb.guides.length === 0 && (

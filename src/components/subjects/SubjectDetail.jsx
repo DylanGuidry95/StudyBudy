@@ -28,21 +28,28 @@ function SubjectDetail({ subject, onBack }) {
         activeGuideId={activeGuideId}
         setActiveGuideId={setActiveGuideId}
         onBack={onBack}
-      />      
-      <div className="editor">
-        <CalendarPanel subjectId={subject.id}> </CalendarPanel>
+      />            
+      <div className="editor">        
         {guidesDb.loading ? (
           <p>Loading guides…</p>
         ) : activeGuide ? (
+          <>
+          <button
+          onClick={() => setActiveGuideId(null)}> Close Guide 
+          </button>          
           <GuideEditor 
           guide={activeGuide}
           notesDb={notesDb}
           onUpdateTitle={updateGuideTitle}
           attachmentsDb= {attachmentsDb} />
+          </>
         ) : (
-          <p>Select or create a study guide</p>
-        )}
-      </div>
+          <>
+            <CalendarPanel subjectId={subject.id}> </CalendarPanel>
+            <p>Select or create a study guide</p>          
+          </>
+        )}        
+      </div>      
     </div>
   );
 }
