@@ -9,7 +9,9 @@ export function useNotes(notes, updateGuide) {
     updateGuide({
       notes: [
         ...notes,
-        { id: Date.now(), title: "New Note", content: "" },
+        { id: Date.now(), 
+          title: "New Note", 
+          content: "" },
       ],
     });
   };
