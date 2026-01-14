@@ -72,7 +72,7 @@ export function useAttachments(attachments, updateGuide) {
     setActiveAttachmentId,
     renamingId,
     renameValue,
-    setRenameValue,
+    setRenameValue,    
     upload,
     startRename,
     saveRename,

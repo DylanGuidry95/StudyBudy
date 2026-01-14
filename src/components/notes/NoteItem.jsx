@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { getCaretCoordinates } from "../../utils/getCaretCoordinates";
 
-function NoteItem({ note, ui }) {
+function NoteItem({ note, ui, attachments }) {
   const isCollapsed = ui.collapsed[note.id] !== false;
 
   const [draft, setDraft] = useState(note.content);
@@ -9,6 +10,10 @@ function NoteItem({ note, ui }) {
 
   const [isSaving, setIsSaving] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
+
+  const [pickerPos, setPickerPos] = useState(null);
+  const [trigger, setTrigger] = useState(null);
+  const textareaRef = useRef(null);
 
   // Sync ONLY when switching notes
   useEffect(() => {
@@ -22,25 +27,82 @@ function NoteItem({ note, ui }) {
   }, []);
 
   const handleChange = (e) => {
-    const value = e.target.value;
+    const textarea = e.target;
+    const value = textarea.value;
+    const cursor = textarea.selectionStart;
+
     setDraft(value);
     isDirtyRef.current = true;
 
+    // If trigger exists, update or cancel it
+    if (trigger) {
+      const typed = value.slice(trigger.start, cursor);
+
+      if (!typed.startsWith("[[") || typed.length > 30) {
+        setTrigger(null);
+        setPickerPos(null);
+      } else {
+        const coords = getCaretCoordinates(textarea, cursor);
+
+        setTrigger({
+          ...trigger,
+          query: typed.slice(2),
+        });
+
+        setPickerPos({
+          top: coords.top + 20,
+          left: coords.left,
+        });
+      }
+    } else {
+      // Detect new trigger
+      const coords = getCaretCoordinates(textarea, cursor);
+
+      setTrigger({
+        start: cursor - 2,
+        query: "",
+      });
+
+      setPickerPos({
+        top: coords.top + 20,
+        left: coords.left,
+      });
+    }
+
     clearTimeout(timeoutRef.current);
-
-    setIsSaving(true);
-    setJustSaved(false);
-
-    timeoutRef.current = setTimeout(async () => {
-      await ui.updateContent(note.id, value);
-
-      setIsSaving(false);
-      setJustSaved(true);
-      isDirtyRef.current = false;
-
-      // hide "Saved" after a moment
-      setTimeout(() => setJustSaved(false), 1500);
+    timeoutRef.current = setTimeout(() => {
+      ui.updateContent(note.id, value);
     }, 700);
+  };
+
+  const filteredAttachments = trigger?.query
+    ? attachments.filter((a) =>
+        a.name.toLowerCase().includes(trigger.query.toLowerCase())
+      )
+    : attachments;
+
+  const clearPicker = () => {
+    setTrigger(null);
+    setPickerPos(null);
+  };
+
+  const insertAttachment = (name) => {
+    const textarea = textareaRef.current;
+    if (!textarea || !trigger) return;
+
+    const before = draft.slice(0, trigger.start);
+    const after = draft.slice(textarea.selectionStart);
+
+    const next = before + `[[${name}]]` + after;
+
+    setDraft(next);
+    setTrigger(null);
+    clearPicker();
+    requestAnimationFrame(() => {
+      textarea.focus();
+      const pos = before.length + name.length + 4;
+      textarea.setSelectionRange(pos, pos);
+    });
   };
 
   return (
@@ -71,10 +133,45 @@ function NoteItem({ note, ui }) {
             {!isSaving && justSaved && "Saved"}
           </div>
           <textarea
+            ref={textareaRef}
             value={draft}
             onChange={handleChange}
             style={{ width: "100%", marginTop: "6px" }}
           />
+          {trigger && pickerPos && filteredAttachments.length > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                top: pickerPos.top,
+                left: pickerPos.left,
+                background: "#fff",
+                border: "1px solid #ccc",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                zIndex: 1000,
+                maxHeight: "180px",
+                overflowY: "auto",
+                borderRadius: "6px",
+                minWidth: "220px",
+              }}
+            >
+              {filteredAttachments.map((att) => (
+                <div
+                  key={att.id}
+                  style={{
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                  }}
+                  onMouseDown={(e) => {
+                    // prevent textarea blur
+                    e.preventDefault();
+                    insertAttachment(att.name);
+                  }}
+                >
+                  {att.name}
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

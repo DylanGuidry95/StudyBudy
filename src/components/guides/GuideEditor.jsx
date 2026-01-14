@@ -13,7 +13,9 @@ function GuideEditor({ guide, onUpdateTitle, notesDb, attachmentsDb }) {
         guide={guide}                
         updateGuide={onUpdateTitle}
       />
-      <NotesPanel notesDb={notesDb} />
+      <NotesPanel 
+      notesDb={notesDb}
+      attachments={attachmentsDb.attachments} />
       <AttachmentPanel attachmentsDb={attachmentsDb} />
     </>
   );

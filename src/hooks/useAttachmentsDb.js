@@ -118,6 +118,25 @@ export function useAttachmentsDb(guideId) {
     setAttachments((prev) => prev.filter((a) => a.id !== id));
   };
 
+  const rename = async (id, newName) => {
+    if (!newName.trim()) return;
+
+    const { error } = await supabase
+      .from("attachments")
+      .update({ name: newName })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Rename failed:", error);
+      return;
+    }
+
+    // Optimistically update UI
+    setAttachments((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, name: newName } : a))
+    );
+  };
+
   const getUrl = async (path) => {
     const { data, error } = await supabase.storage
       .from("Attachments")
@@ -136,6 +155,7 @@ export function useAttachmentsDb(guideId) {
     loading,
     upload,
     remove,
+    rename,
     getUrl,
   };
 }

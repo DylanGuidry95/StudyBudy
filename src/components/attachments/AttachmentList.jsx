@@ -1,7 +1,7 @@
-function AttachmentList({ attachments, ui, db }) {
+function AttachmentList({ attachments = [], ui, db }) {
   return (
     <ul style={{ minWidth: "180px" }}>
-      {(attachments ?? []).map((file) => (
+      {attachments.map((file) => (
         <li key={file.id} style={{ marginBottom: "8px" }}>
           {ui.renamingId === file.id ? (
             <>
@@ -9,37 +9,34 @@ function AttachmentList({ attachments, ui, db }) {
                 value={ui.renameValue}
                 onChange={(e) => ui.setRenameValue(e.target.value)}
               />
-              <button onClick={ui.saveRename}>Save</button>
-              <button onClick={() => ui.setRenamingId(null)}>Cancel</button>
+              <button onClick={() => ui.saveRename(file.id)}>
+                Save
+              </button>
+              <button onClick={ui.cancelRename}>
+                Cancel
+              </button>
             </>
           ) : (
             <>
               <button
-                onClick={() =>
-                  ui.setActiveId((prev) => (prev === file.id ? null : file.id))
-                }
+                onClick={() => ui.setActiveId(file.id)}
                 style={{
-                  fontWeight: file.id === ui.activeId ? "bold" : "normal",
+                  fontWeight:
+                    file.id === ui.activeId ? "bold" : "normal",
                 }}
               >
                 {file.name}
               </button>
 
               <button
-                onClick={() => {
-                  ui.setRenamingId(file.id);
-                  ui.setRenameValue(file.name);
-                }}
+                onClick={() => ui.startRename(file)}
                 style={{ marginLeft: "6px" }}
               >
                 ✏️
               </button>
 
               <button
-                onClick={() => {
-                  db.deleteAttachment(file.id);
-                  ui.setActiveId((prev) => (prev === file.id ? null : prev));
-                }}
+                onClick={() => db.remove(file.id)}
                 style={{ marginLeft: "6px", color: "red" }}
               >
                 🗑️

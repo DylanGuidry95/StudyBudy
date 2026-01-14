@@ -1,7 +1,7 @@
 import NoteItem from "./NoteItem";
 import { useNotesUi } from "../../hooks/useNotesUi";
 
-function NotesPanel({ notesDb }) {
+function NotesPanel({ notesDb, attachments }) {
   // ✅ HOOK CALLED AT TOP LEVEL
   const ui = useNotesUi(notesDb);
 
@@ -22,6 +22,7 @@ function NotesPanel({ notesDb }) {
 
       {notesDb.notes.map((note) => (
         <NoteItem
+          attachments={attachments}
           key={note.id}
           note={note}
           ui={ui} 
