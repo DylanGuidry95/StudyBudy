@@ -1,4 +1,7 @@
+import { useAttachmentPreview } from "../attachments/AttachmentPreviewContext";
+
 function AttachmentList({ attachments = [], ui, db }) {
+  const { openPreview } = useAttachmentPreview();
   return (
     <ul style={{ minWidth: "180px" }}>
       {attachments.map((file) => (
@@ -19,7 +22,7 @@ function AttachmentList({ attachments = [], ui, db }) {
           ) : (
             <>
               <button
-                onClick={() => ui.setActiveId(file.id)}
+                onClick={() => openPreview(file)}
                 style={{
                   fontWeight:
                     file.id === ui.activeId ? "bold" : "normal",

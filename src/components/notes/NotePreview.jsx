@@ -1,7 +1,7 @@
 import { parseAttachmentLinks } from "../../utils/parseAttachmentLinks";
 import AttachmentLink from "../attachments/AttachmentLink";
 
-function NotePreview({ content, attachments, onOpenAttachment }) {
+function NotePreview({ content, attachments }) {
   const parts = parseAttachmentLinks(content);
 
   return (

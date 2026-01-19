@@ -9,6 +9,7 @@ import { useSubjectsDb } from "../../hooks/useSubjectsDb";
 import { useGuidesDb } from "../../hooks/useGuidesDb";
 import { useNotesDb } from "../../hooks/useNoteDb";
 import { useAttachmentsDb } from "../../hooks/useAttachmentsDb";
+import AttachmentPreviewProvider from "../attachments/AttachmentPreviewContext";
 
 function SubjectDetail() {  
   const { id } = useParams();  
@@ -61,18 +62,18 @@ function SubjectDetail() {
             <p>Loading guides…</p>
           ) : activeGuide ? (
             <>
-              <button onClick={() => setActiveGuideId(null)}>
+              <button onClick={() => setActiveGuideId(activeGuide.id)}>
                 Close Guide
               </button>
-
-              <GuideEditor
-                guide={activeGuide}
-                notesDb={notesDb}
-                onUpdateTitle={updateGuideTitle}
-                attachmentsDb={attachmentsDb}
-              />
-
-              <AttachmentPreviewPanel attachmentsDb={attachmentsDb} />
+              <AttachmentPreviewProvider>                
+                  <GuideEditor
+                    guide={activeGuide}
+                    notesDb={notesDb}
+                    onUpdateTitle={updateGuideTitle}
+                    attachmentsDb={attachmentsDb}
+                  />
+                <AttachmentPreviewPanel attachmentsDb={attachmentsDb}/>
+              </AttachmentPreviewProvider>
             </>
           ) : (
             <>

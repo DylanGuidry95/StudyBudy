@@ -2,6 +2,11 @@ import { useAttachmentPreview } from "../attachments/AttachmentPreviewContext";
 
 function AttachmentLink({ name, attachments }) {
   const { openPreview } = useAttachmentPreview();
+
+  if (!Array.isArray(attachments)) {
+    return <span>[[{name}]]</span>;
+  }
+
   const attachment = attachments.find(a => a.name === name);
 
   if (!attachment) {
@@ -22,4 +27,4 @@ function AttachmentLink({ name, attachments }) {
   );
 }
 
-export default AttachmentLink
+export default AttachmentLink;

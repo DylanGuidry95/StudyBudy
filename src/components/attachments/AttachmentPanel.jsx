@@ -54,42 +54,6 @@ function AttachmentPanel({ attachmentsDb }) {
         ui={ui}
         db={db}
       />
-      {activeFile && (
-        <>
-          <button
-            onClick={() => ui.setActiveId(null)}
-            style={{ marginBottom: 8 }}
-          >
-            ✕ Close Preview
-          </button>
-
-          {activeFile.type === "pdf" && (
-            <iframe
-              src={activeFile.url}
-              title={activeFile.name}
-              width="100%"
-              height="400"
-            />
-          )}
-
-          {activeFile.type === "image" && (
-            <img
-              src={activeFile.url}
-              alt={activeFile.name}
-              style={{ maxWidth: "100%" }}
-            />
-          )}
-
-          {activeFile.type === "text" && (
-            <iframe
-              src={activeFile.url}
-              title={activeFile.name}
-              width="100%"
-              height="250"
-            />
-          )}
-        </>
-      )}
     </div>
   );
 }
