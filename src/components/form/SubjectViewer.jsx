@@ -11,6 +11,7 @@ function SubjectViewer({ subjectsUi }) {
     deleteSubject,
   } = subjectsUi;
 
+
   const navigate = useNavigate();
 
   const confirmDelete = (subject) => {

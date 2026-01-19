@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getCurrentSemesterKey } from "../utils/semester";
 
 const SEMESTER_ORDER = {
@@ -12,12 +12,7 @@ export function useSubjects(subjectsDb) {
     throw new Error("useSubjects requires subjectsDb");
   }
 
-  const {
-    subjects = [],
-    loading,
-    addSubject,
-    deleteSubject
-  } = subjectsDb;
+  const { subjects = [], loading, addSubject, deleteSubject } = subjectsDb;
 
   const [openGroups, setOpenGroups] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,29 +23,32 @@ export function useSubjects(subjectsDb) {
     if (!searchTerm.trim()) return true;
     const q = searchTerm.toLowerCase();
     return (
-      s.name.toLowerCase().includes(q) ||
-      s.instructor.toLowerCase().includes(q)
+      s.name.toLowerCase().includes(q) || s.instructor.toLowerCase().includes(q)
     );
   };
 
-  const groupedSubjects = subjects.reduce((groups, s) => {
-    if (!matchSearch(s)) return groups;
-    const key = `${s.semester} ${s.year}`;
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(s);
-    return groups;
-  }, {});
+  const groupedSubjects = useMemo(() => {
+    return subjects.reduce((groups, s) => {
+      if (!matchSearch(s)) return groups;
+      const key = `${s.semester} ${s.year}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(s);
+      return groups;
+    }, {});
+  }, [subjects, searchTerm]);
 
-  const sortedGroups = Object.keys(groupedSubjects).sort((a, b) => {
-    if (a === currentSemesterKey) return -1;
-    if (b === currentSemesterKey) return 1;
+  const sortedGroups = useMemo(() => {
+    return Object.keys(groupedSubjects).sort((a, b) => {
+      if (a === currentSemesterKey) return -1;
+      if (b === currentSemesterKey) return 1;
 
-    const [sa, ya] = a.split(" ");
-    const [sb, yb] = b.split(" ");
+      const [sa, ya] = a.split(" ");
+      const [sb, yb] = b.split(" ");
 
-    if (ya !== yb) return yb - ya;
-    return SEMESTER_ORDER[sb] - SEMESTER_ORDER[sa];
-  });
+      if (ya !== yb) return yb - ya;
+      return SEMESTER_ORDER[sb] - SEMESTER_ORDER[sa];
+    });
+  }, [groupedSubjects, currentSemesterKey]);
 
   const toggleGroup = (group) => {
     setOpenGroups((prev) => ({

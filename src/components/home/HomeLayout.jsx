@@ -12,6 +12,8 @@ export function HomeLayout() {
   const subjectsUi = useSubjects(subjectsDb);
   const { user } = useAuthContext();
   
+  useEffect(() => {console.log("HomeLoyout");}, []);
+
   if (!user) {
     return (
       <div>        

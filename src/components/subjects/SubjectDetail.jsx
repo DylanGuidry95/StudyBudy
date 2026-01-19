@@ -21,6 +21,9 @@ function SubjectDetail() {
 
   const navigate = useNavigate();
   
+  useEffect(() => {
+    console.log("loading subject:", id)
+  }, [id]);
 
   if (subjectsDb.loading) {
     return <p>Loading subject…</p>;
