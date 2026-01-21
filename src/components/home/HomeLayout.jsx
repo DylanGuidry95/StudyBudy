@@ -23,7 +23,7 @@ export function HomeLayout() {
     );
   }
 
-  if (subjectsUi.loading) {
+  if (subjectsUi.loading && !user) {
     return <p>Loading subjects…</p>;
   }
 

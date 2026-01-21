@@ -6,8 +6,15 @@ import { getCroppedImage } from "../../utils/getCroppedImage";
 import "../../css/cropper.css";
 
 function ProfileUpdateForm({ stopViewProfile }) {
-  const { profile, loading, error, updateName, updatePassword, updateAvatar } =
-    useAccounts();
+  const {
+    profile,
+    loading,
+    error,
+    avatarSignedUrl,
+    updateName,
+    updatePassword,
+    updateAvatar,
+  } = useAccounts();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -32,11 +39,14 @@ function ProfileUpdateForm({ stopViewProfile }) {
     if (profile) {
       setFirstName(profile.first_name ?? "");
       setLastName(profile.last_name ?? "");
-      if (profile.avatar_url) {
-        setAvatarPreview(profile.avatar_url);
-      }
     }
   }, [profile]);
+
+  useEffect(() => {    
+    if (avatarSignedUrl && !profileImage) {
+      setAvatarPreview(avatarSignedUrl);
+    }
+  }, [avatarSignedUrl, profileImage]);
 
   // --------------------------------------
   // SUBMIT HANDLER
@@ -67,6 +77,7 @@ function ProfileUpdateForm({ stopViewProfile }) {
       setConfirmedPassword("");
       setProfileImage(null);
       setEdit(false);
+      setProfileImage(null);
     } catch (err) {
       console.error(err);
     } finally {
@@ -119,7 +130,7 @@ function ProfileUpdateForm({ stopViewProfile }) {
         <form onSubmit={handleInformationUpdate}>
           <div className="signup-content">
             <div className="avatar-preview-wrapper">
-              {avatarPreview ? (                
+              {avatarPreview ? (
                 <img
                   src={avatarPreview}
                   alt="Avatar Preview"
@@ -225,6 +236,11 @@ function ProfileUpdateForm({ stopViewProfile }) {
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
+              />
+            </div>
+
+            <div className="cropper-actions">
+              <input
                 type="range"
                 min={1}
                 max={3}
@@ -232,9 +248,7 @@ function ProfileUpdateForm({ stopViewProfile }) {
                 value={zoom}
                 onChange={(e) => setZoom(Number(e.target.value))}
               />
-            </div>
 
-            <div className="cropper-actions">
               <button type="button" onClick={handleCropSave}>
                 Use Image
               </button>
