@@ -11,9 +11,14 @@ function LoginForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await signIn(email, password);
-    setLoading(false);
-    if (error) setError(error.message);    
+    setError("")
+    try{
+       await signIn({email, password});
+    } catch (err) {
+      setEmail(err.message)
+    } finally{
+      setLoading(false)
+    }
   };
 
   return (

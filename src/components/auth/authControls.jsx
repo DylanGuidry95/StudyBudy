@@ -1,40 +1,54 @@
+import { useAuthContext } from "../auth/AuthProvider";
 import { useState } from "react";
-import { useAuth } from "./useAuth";
-import LoginForm from "./LoginForm";
-import SignUpForm from "./SignUpForm";
-import ProfileUpdateForm from "./ProfileUpdateForm"
+import ProfileUpdateForm from "./ProfileUpdateForm";
+import LoginForm from "./LoginForm"
 
-export function AuthControls({}) {
-  const auth = useAuth();
-  const [onBoard, setOnboard] = useState(false)
-  const [profileView, setProfileView] = useState(false)
+function AuthControls() {
+  const auth = useAuthContext();
+  const [profileView, setProfileView] = useState(false);
 
-  if (auth.loading) return <p>Loading...</p>;
+  const firstName = auth.profile?.first_name;
+  const lastName = auth.profile?.last_name;
 
-  if (!auth.user) {
-    return (
-      <>
-        <LoginForm onLogin></LoginForm>
-        <br/>
-
-        <button onClick={() => setOnboard(true)}>Create Account</button>
-        {onBoard &&
-        <SignUpForm onSignUp finishSignUp={()=> setOnboard(false)}></SignUpForm>
-        }
-        <br />
-      </>
-    );
+  if(!auth.user && !auth.authLoading) {
+    return <LoginForm/>
   }
 
   return (
-    <>
-      <p>Logged in as {auth.user.email}</p>
+    <div className="auth-controls">      
+      <div className="auth-user-info">
+        {auth.avatarSignedUrl ? (
+          <img
+            src={auth.avatarSignedUrl}
+            alt="Avatar"
+            className="auth-avatar"
+          />
+        ) : (
+          <div className="auth-avatar-fallback">
+            {firstName?.[0]}
+            {lastName?.[0]}
+          </div>
+        )}
+
+        <div className="auth-text">
+          <p>
+            Logged in as{" "}
+            <strong>
+              {firstName && lastName
+                ? `${firstName} ${lastName}`
+                : auth.user.email}
+            </strong>
+          </p>
+        </div>
+      </div>
+
       <button onClick={auth.signOut}>Log out</button>
       <button onClick={() => setProfileView(true)}>Edit Account</button>
-      {profileView &&
-        <ProfileUpdateForm stopViewProfile={ () => setProfileView(false)}/>
-      }
-    </>
+
+      {profileView && (
+        <ProfileUpdateForm stopViewProfile={() => setProfileView(false)} />
+      )}
+    </div>
   );
 }
 

@@ -106,15 +106,75 @@ export function useAuth() {
     return () => listener.subscription.unsubscribe();
   }, [loadProfile]);
 
+  // -------------------------
+  // SIGN IN
+  // -------------------------
+  const signIn = async ({ email, password }) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  // -------------------------
+  // SIGN UP
+  // -------------------------
+  const signUp = async ({ email, password }) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  // -------------------------
+  // SIGN OUT
+  // -------------------------
+  const signOut = async () => {
+    await supabase.auth.signOut();
+
+    // Clear cached state immediately
+    setUser(null);
+    setProfile(null);
+    setAvatarSignedUrl(null);
+  };
+
+  // -------------------------
+  // RESET PASSWORD
+  // -------------------------
+  const resetPassword = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
   // --------------------------------------
   // CONTEXT API
   // --------------------------------------
   return {
+    // state
     user,
     profile,
     avatarSignedUrl,
     authLoading,
 
+    // auth actions
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+
+    // profile helpers
     refreshProfile: () => loadProfile(user),
     setProfile,
     setAvatarSignedUrl,
